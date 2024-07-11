@@ -5,6 +5,7 @@ import Layout from "@/components/layout";
 import ErrorPage from "@/components/error-page";
 import DCAPage from "@/views/dca";
 import LimitPage from "@/views/limit";
+import Orders from "@/views/orders";
 
 const router = createBrowserRouter([
 	{
@@ -21,9 +22,13 @@ const router = createBrowserRouter([
 				element: <DCAPage />,
 			},
 			{
-				path: "limt",
+				path: "limit",
 				element: <LimitPage />,
 			},
+            {
+                path: "orders",
+                element: <Orders />
+            }
 		],
 	},
 ]);

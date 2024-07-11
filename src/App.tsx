@@ -20,7 +20,7 @@ function App() {
 		<WagmiProvider config={config}>
 			<QueryClientProvider client={queryClient}>
 				<RainbowKitProvider>
-					<ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+					<ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
 						<RouterProvider router={router} />
 					</ThemeProvider>
 				</RainbowKitProvider>
