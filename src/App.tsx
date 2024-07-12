@@ -6,6 +6,7 @@ import { getDefaultConfig, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { WagmiProvider } from "wagmi";
 import { sepolia } from "wagmi/chains";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { Toaster } from "sonner";
 
 const config = getDefaultConfig({
 	appName: "AutoStackBit",
@@ -21,6 +22,16 @@ function App() {
 			<QueryClientProvider client={queryClient}>
 				<RainbowKitProvider>
 					<ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+						<Toaster
+							position="top-center"
+							className="toaster group"
+							toastOptions={{
+								classNames: {
+									toast:
+										"group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg group-[.toaster]:pointer-events-auto",
+								},
+							}}
+						/>
 						<RouterProvider router={router} />
 					</ThemeProvider>
 				</RainbowKitProvider>

@@ -51,10 +51,10 @@ const DialogDCA = () => {
 					</CardHeader>
 					<CardContent>
 						<div className="mt-4 space-y-2">
-                            <div className="flex items-center justify-between">
-                                <div className="text-muted-foreground text-sm">Status</div>
-                                <Badge className="text-xs">ACTIVE</Badge>
-                            </div>
+							<div className="flex items-center justify-between">
+								<div className="text-muted-foreground text-sm">Status</div>
+								<Badge className="text-xs">ACTIVE</Badge>
+							</div>
 							<div className="flex items-center justify-between">
 								<div className="text-muted-foreground text-sm">Sell Amount</div>
 								<div className="text-sm flex items-center gap-1">
@@ -89,7 +89,7 @@ const DialogDCA = () => {
 								</div>
 								<div className="text-sm">10</div>
 							</div>
-                            <div className="flex items-center justify-between">
+							<div className="flex items-center justify-between">
 								<div className="text-muted-foreground text-sm">
 									Bitcoin Address
 								</div>

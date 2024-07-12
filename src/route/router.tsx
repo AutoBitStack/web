@@ -25,10 +25,10 @@ const router = createBrowserRouter([
 				path: "limit",
 				element: <LimitPage />,
 			},
-            {
-                path: "orders",
-                element: <Orders />
-            }
+			{
+				path: "orders",
+				element: <Orders />,
+			},
 		],
 	},
 ]);

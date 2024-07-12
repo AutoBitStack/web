@@ -1,5 +1,4 @@
 import { listChains, listSupportedTokens } from "@/lib/utils";
-import { BitcoinIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import {
 	DropdownMenu,
@@ -9,16 +8,25 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import type { Token } from "@/types";
 
-const SelectChain = () => {
+const SelectChain: React.FC<{
+	selectedToken: Token;
+	setSelectedToken: React.Dispatch<React.SetStateAction<Token>>;
+}> = ({ selectedToken, setSelectedToken }) => {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
 				<Button
 					variant="outline"
-					className="flex items-center gap-1 rounded-full"
+					className="flex items-center gap-1 rounded-full w-[80px]"
 				>
-					<BitcoinIcon className="w-4 h-4" /> Bitcoin
+					<img
+						src={selectedToken.icon}
+						alt=""
+						className="w-4 h-4 rounded-full"
+					/>
+					<div>{selectedToken.symbol}</div>
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align="center">
@@ -33,7 +41,8 @@ const SelectChain = () => {
 								return (
 									<DropdownMenuItem
 										key={x.contractAddress}
-										disabled={item === "arbitrum"}
+										disabled={item !== "ethereum"}
+										onClick={() => setSelectedToken(x)}
 									>
 										<div className="w-full flex items-center gap-2">
 											<img

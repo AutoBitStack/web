@@ -27,14 +27,22 @@ export const CustomConnectButton = () => {
 						{(() => {
 							if (!connected) {
 								return (
-									<Button onClick={openConnectModal} type="button" variant="default">
+									<Button
+										onClick={openConnectModal}
+										type="button"
+										variant="default"
+									>
 										Connect Wallet
 									</Button>
 								);
 							}
 							if (chain.unsupported) {
 								return (
-									<Button variant="destructive" onClick={openChainModal} type="button">
+									<Button
+										variant="destructive"
+										onClick={openChainModal}
+										type="button"
+									>
 										Wrong network
 									</Button>
 								);
@@ -42,7 +50,7 @@ export const CustomConnectButton = () => {
 							return (
 								<div style={{ display: "flex", gap: 12 }}>
 									<Button
-                                        variant="outline"
+										variant="outline"
 										onClick={openChainModal}
 										style={{ display: "flex", alignItems: "center" }}
 										type="button"
@@ -69,7 +77,11 @@ export const CustomConnectButton = () => {
 										)}
 										{chain.name}
 									</Button>
-									<Button variant="outline" onClick={openAccountModal} type="button">
+									<Button
+										variant="outline"
+										onClick={openAccountModal}
+										type="button"
+									>
 										{account.displayName}
 										{account.displayBalance
 											? ` (${account.displayBalance})`

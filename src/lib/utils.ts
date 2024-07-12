@@ -1,23 +1,13 @@
+import type { Chains, SupportedTokens } from "@/types";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { zeroAddress } from "viem";
 
+export const HUB_CONTRACT = "0xB34CAF81D30D945B7E1930991d49B8577A4dCdC8";
+
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }
-
-type Chains = "ethereum" | "arbitrum" | "polkadot";
-
-interface Token {
-	name: string;
-	symbol: string;
-	contractAddress: string;
-	icon: string;
-}
-
-type SupportedTokens = {
-	[key in Chains]?: Token[];
-};
 
 export const listSupportedTokens: SupportedTokens = {
 	ethereum: [
@@ -26,18 +16,24 @@ export const listSupportedTokens: SupportedTokens = {
 			symbol: "ETH",
 			contractAddress: zeroAddress,
 			icon: "https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/svg/icon/eth.svg",
+			minimumAmount: 0.02,
+			decimals: 18,
 		},
 		{
 			name: "USD Coin",
 			symbol: "USDC",
 			contractAddress: "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
 			icon: "https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/svg/icon/usdc.svg",
+			minimumAmount: 50,
+			decimals: 6,
 		},
 		{
 			name: "Chainflip",
 			symbol: "Flip",
 			contractAddress: "0xdC27c60956cB065D19F08bb69a707E37b36d8086",
 			icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/13268.png",
+			minimumAmount: 50,
+			decimals: 18,
 		},
 	],
 	arbitrum: [
@@ -46,12 +42,26 @@ export const listSupportedTokens: SupportedTokens = {
 			symbol: "ETH",
 			contractAddress: zeroAddress,
 			icon: "https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/svg/icon/eth.svg",
+			minimumAmount: 0,
+			decimals: 18,
 		},
 		{
 			name: "USD Coin",
 			symbol: "USDC",
 			contractAddress: "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
 			icon: "https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/svg/icon/usdc.svg",
+			minimumAmount: 0,
+			decimals: 6,
+		},
+	],
+	polkadot: [
+		{
+			name: "Polkadot",
+			symbol: "DOT",
+			contractAddress: "",
+			icon: "https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/svg/icon/dot.svg",
+			minimumAmount: 0,
+			decimals: 18,
 		},
 	],
 };
@@ -59,3 +69,30 @@ export const listSupportedTokens: SupportedTokens = {
 export const listChains: Chains[] = Object.keys(
 	listSupportedTokens,
 ) as Chains[];
+
+export const handleInputCurrency = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const inputValue = e.target.value;
+	const regex = /^[0-9]\d*\.?\d*$/;
+	if (inputValue === "" || regex.test(inputValue)) {
+		return inputValue;
+	}
+	return null;
+};
+
+export const validatePositiveInteger = (
+	inputValue: string,
+	maxValue = Number.MAX_SAFE_INTEGER,
+) => {
+	const trimmedValue = inputValue.replace(/^0+/, "");
+	const regex = /^[1-9]\d*$/;
+
+	if (
+		trimmedValue === "" ||
+		(regex.test(trimmedValue) && Number(trimmedValue) <= maxValue)
+	) {
+		return trimmedValue;
+	}
+	return null;
+};
+
+export const listFrequencies = ["Days", "Weeks", "Months"];

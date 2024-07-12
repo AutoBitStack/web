@@ -1,5 +1,12 @@
 import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRow,
+} from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import DialogDCA from "./dialog-dca";
 import DialogLimit from "./dialog-limit";
