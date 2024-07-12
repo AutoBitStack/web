@@ -4,6 +4,7 @@ import {
 	AccordionItem,
 	AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -50,6 +51,10 @@ const DialogDCA = () => {
 					</CardHeader>
 					<CardContent>
 						<div className="mt-4 space-y-2">
+                            <div className="flex items-center justify-between">
+                                <div className="text-muted-foreground text-sm">Status</div>
+                                <Badge className="text-xs">ACTIVE</Badge>
+                            </div>
 							<div className="flex items-center justify-between">
 								<div className="text-muted-foreground text-sm">Sell Amount</div>
 								<div className="text-sm flex items-center gap-1">
@@ -84,36 +89,34 @@ const DialogDCA = () => {
 								</div>
 								<div className="text-sm">10</div>
 							</div>
+                            <div className="flex items-center justify-between">
+								<div className="text-muted-foreground text-sm">
+									Bitcoin Address
+								</div>
+								<div className="text-sm">mt89Kn...PCxv3</div>
+							</div>
 						</div>
 						<Accordion type="single" collapsible>
 							<AccordionItem value="item-1">
 								<AccordionTrigger>Transaction history</AccordionTrigger>
-								<AccordionContent>
+								<AccordionContent className="max-h-[200px] overflow-y-auto">
 									<div className="">
-										<div className="flex items-center justify-between">
-											<div className="text-muted-foreground text-sm">
-												Period #1
-											</div>
-											<Button variant="link">
-                                                1672571-Ethereum-22
-                                            </Button>
-										</div>
-                                        <div className="flex items-center justify-between">
-											<div className="text-muted-foreground text-sm">
-												Period #2
-											</div>
-											<Button variant="link">
-                                                1672571-Ethereum-22
-                                            </Button>
-										</div>
-                                        <div className="flex items-center justify-between">
-											<div className="text-muted-foreground text-sm">
-												Period #3
-											</div>
-											<Button variant="link">
-                                                1672571-Ethereum-22
-                                            </Button>
-										</div>
+										{Array.from({ length: 10 }, (_, i) => {
+											return (
+												<div
+													className="flex items-center justify-between"
+													key={`${
+														// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+														i
+													}-item`}
+												>
+													<div className="text-muted-foreground text-sm">
+														Period #{i + 1}
+													</div>
+													<Button variant="link">1672571-Ethereum-22</Button>
+												</div>
+											);
+										})}
 									</div>
 								</AccordionContent>
 							</AccordionItem>

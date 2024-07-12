@@ -4,13 +4,13 @@ import router from "./route/router";
 import "@rainbow-me/rainbowkit/styles.css";
 import { getDefaultConfig, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { WagmiProvider } from "wagmi";
-import { mainnet, polygon, optimism, arbitrum, base } from "wagmi/chains";
+import { sepolia } from "wagmi/chains";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 
 const config = getDefaultConfig({
 	appName: "AutoStackBit",
 	projectId: import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID as string,
-	chains: [mainnet, polygon, optimism, arbitrum, base],
+	chains: [sepolia],
 	ssr: false,
 });
 const queryClient = new QueryClient();

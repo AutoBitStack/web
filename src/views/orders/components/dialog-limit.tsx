@@ -1,12 +1,28 @@
+import {
+	Accordion,
+	AccordionContent,
+	AccordionItem,
+	AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
 import {
 	Dialog,
 	DialogContent,
 	DialogDescription,
+	DialogFooter,
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
+import { CopyIcon } from "lucide-react";
 
 const DialogLimit = () => {
 	return (
@@ -18,12 +34,88 @@ const DialogLimit = () => {
 			</DialogTrigger>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>Are you absolutely sure?</DialogTitle>
+					<DialogTitle>Limit Orders</DialogTitle>
 					<DialogDescription>
-						This action cannot be undone. This will permanently delete your
-						account and remove your data from our servers.
+						This is the detail of your Limit Order
 					</DialogDescription>
 				</DialogHeader>
+				<Card>
+					<CardHeader className="bg-accent rounded-t-xl">
+						<CardTitle>
+							Order ID 0x69..294{" "}
+							<Button variant="outline" size="icon" className="w-5 h-5">
+								<CopyIcon className="w-3 h-3" />
+							</Button>{" "}
+						</CardTitle>
+						<CardDescription>Date: November 23, 2023</CardDescription>
+					</CardHeader>
+					<CardContent>
+						<div className="mt-4 space-y-2">
+							<div className="flex items-center justify-between">
+								<div className="text-muted-foreground text-sm">Status</div>
+								<Badge className="text-xs">ACTIVE</Badge>
+							</div>
+							<div className="flex items-center justify-between">
+								<div className="text-muted-foreground text-sm">Sell Amount</div>
+								<div className="text-sm flex items-center gap-1">
+									<div>0.2</div>
+									<img
+										src="https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/svg/icon/eth.svg"
+										alt=""
+										className="w-4 h-4 rounded-full"
+									/>
+								</div>
+							</div>
+							<div className="flex items-center justify-between">
+								<div className="text-muted-foreground text-sm">
+									Price Target
+								</div>
+								<div className="text-sm">55.000,00</div>
+							</div>
+							<div className="flex items-center justify-between">
+								<div className="text-muted-foreground text-sm">
+									Bitcoin Address
+								</div>
+								<div className="text-sm flex items-center gap-1">
+									<div>mt89Kn...PCxv3</div>
+									<Button variant="outline" size="icon" className="w-5 h-5">
+										<CopyIcon className="w-3 h-3" />
+									</Button>
+								</div>
+							</div>
+						</div>
+						<Accordion type="single" collapsible>
+							<AccordionItem value="item-1">
+								<AccordionTrigger>Transaction history</AccordionTrigger>
+								<AccordionContent className="max-h-[200px] overflow-y-auto">
+									<div className="">
+										{Array.from({ length: 10 }, (_, i) => {
+											return (
+												<div
+													className="flex items-center justify-between"
+													key={`${
+														// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+														i
+													}-item`}
+												>
+													<div className="text-muted-foreground text-sm">
+														Period #{i + 1}
+													</div>
+													<Button variant="link">1672571-Ethereum-22</Button>
+												</div>
+											);
+										})}
+									</div>
+								</AccordionContent>
+							</AccordionItem>
+						</Accordion>
+					</CardContent>
+				</Card>
+				<DialogFooter>
+					<Button variant="destructive" type="submit">
+						Cancel order
+					</Button>
+				</DialogFooter>
 			</DialogContent>
 		</Dialog>
 	);

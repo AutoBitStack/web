@@ -1,5 +1,7 @@
 import { ArrowUpRightIcon } from "lucide-react";
 import { Button } from "./ui/button";
+import { Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export const Menus: React.FC<{ activeMenu: string }> = ({
 	activeMenu = "dca",
@@ -10,26 +12,27 @@ export const Menus: React.FC<{ activeMenu: string }> = ({
 				href="https://swap.perseverance.chainflip.io/"
 				target="_blank"
 				rel="noopener noreferrer"
+                className="hidden sm:block"
 			>
 				<Button variant="ghost" className="rounded-full w-24">
 					Swap <ArrowUpRightIcon className="w-4 h-4" />
 				</Button>
 			</a>
-			<a href="/dca">
+			<Link to="/dca">
 				<Button variant={activeMenu === "dca" ? "secondary" : "ghost"} className="rounded-full w-24">
 					DCA
 				</Button>
-			</a>
-			<a href="/limit">
+			</Link>
+			<Link to="/limit">
 				<Button variant={activeMenu === "limit" ? "secondary" : "ghost"} className="rounded-full w-24">
 					Limit
 				</Button>
-			</a>
-			<a href="/orders">
+			</Link>
+			<Link to="/orders">
 				<Button variant={activeMenu === "orders" ? "secondary" : "ghost"} className="rounded-full w-24">
 					Orders
 				</Button>
-			</a>
+			</Link>
 		</div>
 	);
 };
