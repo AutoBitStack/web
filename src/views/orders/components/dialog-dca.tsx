@@ -23,8 +23,15 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog";
 import { CopyIcon } from "lucide-react";
+import { useDetailOrder } from "../hooks";
+import { formatWallet, listFrequencies, mappedByToken } from "@/lib/utils";
 
-const DialogDCA = () => {
+const DialogDCA: React.FC<{
+	orderId: string;
+	listTx: { tx_hash: string }[];
+}> = ({ orderId, listTx }) => {
+	const { getDcaOrder } = useDetailOrder();
+	const { data, isError, isPending } = getDcaOrder(orderId);
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
@@ -42,85 +49,134 @@ const DialogDCA = () => {
 				<Card>
 					<CardHeader className="bg-accent rounded-t-xl">
 						<CardTitle>
-							Order ID 0x69..294{" "}
-							<Button variant="outline" size="icon" className="w-5 h-5">
+							Order ID {formatWallet(orderId)}
+							<Button variant="outline" size="icon" className="w-5 h-5 ml-2">
 								<CopyIcon className="w-3 h-3" />
 							</Button>{" "}
 						</CardTitle>
 						<CardDescription>Date: November 23, 2023</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<div className="mt-4 space-y-2">
-							<div className="flex items-center justify-between">
-								<div className="text-muted-foreground text-sm">Status</div>
-								<Badge className="text-xs">ACTIVE</Badge>
-							</div>
-							<div className="flex items-center justify-between">
-								<div className="text-muted-foreground text-sm">Sell Amount</div>
-								<div className="text-sm flex items-center gap-1">
-									<div>0.2</div>
-									<img
-										src="https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/svg/icon/eth.svg"
-										alt=""
-										className="w-4 h-4 rounded-full"
-									/>
-								</div>
-							</div>
-							<div className="flex items-center justify-between">
-								<div className="text-muted-foreground text-sm">
-									Remaining Amount
-								</div>
-								<div className="text-sm flex items-center gap-1">
-									<div>0.13</div>
-									<img
-										src="https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/svg/icon/eth.svg"
-										alt=""
-										className="w-4 h-4 rounded-full"
-									/>
-								</div>
-							</div>
-							<div className="flex items-center justify-between">
-								<div className="text-muted-foreground text-sm">Frequency</div>
-								<div className="text-sm">Weeks</div>
-							</div>
-							<div className="flex items-center justify-between">
-								<div className="text-muted-foreground text-sm">
-									Remaining Total Frequency
-								</div>
-								<div className="text-sm">10</div>
-							</div>
-							<div className="flex items-center justify-between">
-								<div className="text-muted-foreground text-sm">
-									Bitcoin Address
-								</div>
-								<div className="text-sm">mt89Kn...PCxv3</div>
-							</div>
-						</div>
-						<Accordion type="single" collapsible>
-							<AccordionItem value="item-1">
-								<AccordionTrigger>Transaction history</AccordionTrigger>
-								<AccordionContent className="max-h-[200px] overflow-y-auto">
-									<div className="">
-										{Array.from({ length: 10 }, (_, i) => {
-											return (
-												<div
-													className="flex items-center justify-between"
-													key={`${
-														// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-														i
-													}-item`}
-												>
-													<div className="text-muted-foreground text-sm">
-														Period #{i + 1}
-													</div>
-													<Button variant="link">1672571-Ethereum-22</Button>
-												</div>
-											);
-										})}
+						{!isError && !isPending && !!data && (
+							<>
+								<div className="mt-4 space-y-2">
+									<div className="flex items-center justify-between">
+										<div className="text-muted-foreground text-sm">Status</div>
+										{((
+											data as (string | boolean | bigint)[]
+										)[7] as boolean) && (
+											<Badge className="text-xs">ACTIVE</Badge>
+										)}
+										{(!(
+											data as (string | boolean | bigint)[]
+										)[7] as boolean) && (
+											<Badge variant="destructive" className="text-xs">
+												INACTIVE
+											</Badge>
+										)}
 									</div>
-								</AccordionContent>
-							</AccordionItem>
-						</Accordion>
+									<div className="flex items-center justify-between">
+										<div className="text-muted-foreground text-sm">
+											Sell Amount
+										</div>
+										<div className="text-sm flex items-center gap-1">
+											<div>
+												{Number(
+													(data as (string | boolean | bigint)[])[3] as bigint,
+												) /
+													10 **
+														(mappedByToken[(data as string[])[2]]?.decimals ??
+															0)}
+											</div>
+											<img
+												src={mappedByToken[(data as string[])[2]].icon}
+												alt=""
+												className="w-4 h-4 rounded-full"
+											/>
+										</div>
+									</div>
+									<div className="flex items-center justify-between">
+										<div className="text-muted-foreground text-sm">
+											Remaining Amount
+										</div>
+										<div className="text-sm flex items-center gap-1">
+											<div>
+												{Number((data as bigint[])[3]) /
+													10 **
+														(mappedByToken[(data as string[])[2]]?.decimals ??
+															0)}
+											</div>
+											<img
+												src={mappedByToken[(data as string[])[2]].icon}
+												alt=""
+												className="w-4 h-4 rounded-full"
+											/>
+										</div>
+									</div>
+									<div className="flex items-center justify-between">
+										<div className="text-muted-foreground text-sm">
+											Frequency
+										</div>
+										<div className="text-sm">
+											{listFrequencies[(data as number[])[5]]}
+										</div>
+									</div>
+									<div className="flex items-center justify-between">
+										<div className="text-muted-foreground text-sm">
+											Remaining Total Frequency
+										</div>
+										<div className="text-sm">
+											{Number((data as bigint[])[6])}
+										</div>
+									</div>
+									<div className="flex items-center justify-between">
+										<div className="text-muted-foreground text-sm">
+											Bitcoin Address
+										</div>
+										<div className="text-sm">
+											{formatWallet((data as string[])[1])}
+										</div>
+									</div>
+								</div>
+								<Accordion type="single" collapsible>
+									<AccordionItem value="item-1">
+										<AccordionTrigger>Transaction history</AccordionTrigger>
+										<AccordionContent className="max-h-[100px] overflow-y-auto">
+											<div>
+												{listTx.map((x, index) => {
+													return (
+														<div
+															className="flex items-center justify-between"
+															key={`${x.tx_hash}-item`}
+														>
+															<div className="text-muted-foreground text-sm">
+																Period #{index + 1}
+															</div>
+															<a
+																href={`https://scan.perseverance.chainflip.io/channels/${x.tx_hash}`}
+																target="_blank"
+																rel="noopener noreferrer"
+															>
+																<Button variant="link">{x.tx_hash}</Button>
+															</a>
+														</div>
+													);
+												})}
+												{listTx.length === 0 && (
+													<div className="text-muted-foreground">
+														No transactions
+													</div>
+												)}
+											</div>
+										</AccordionContent>
+									</AccordionItem>
+								</Accordion>
+							</>
+						)}
+						{isPending && "loading..."}
+						{isError &&
+							!isPending &&
+							"Sorry we can't get the detail of the order"}
 					</CardContent>
 				</Card>
 				<DialogFooter>

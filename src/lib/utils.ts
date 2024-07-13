@@ -1,7 +1,8 @@
-import type { Chains, SupportedTokens } from "@/types";
+import type { Chains, SupportedTokens, Token } from "@/types";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { zeroAddress } from "viem";
+import { createClient } from "@supabase/supabase-js";
 
 export const HUB_CONTRACT = "0xB34CAF81D30D945B7E1930991d49B8577A4dCdC8";
 
@@ -64,6 +65,37 @@ export const listSupportedTokens: SupportedTokens = {
 			decimals: 18,
 		},
 	],
+};
+
+interface IMappedByToken {
+	[key: string]: Token;
+}
+
+export const mappedByToken: IMappedByToken = {
+	"0x0000000000000000000000000000000000000000": {
+		name: "Ethereum",
+		symbol: "ETH",
+		contractAddress: zeroAddress,
+		icon: "https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/svg/icon/eth.svg",
+		minimumAmount: 0.02,
+		decimals: 18,
+	},
+	"0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238": {
+		name: "USD Coin",
+		symbol: "USDC",
+		contractAddress: "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
+		icon: "https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/svg/icon/usdc.svg",
+		minimumAmount: 50,
+		decimals: 6,
+	},
+	"0xdC27c60956cB065D19F08bb69a707E37b36d8086": {
+		name: "Chainflip",
+		symbol: "Flip",
+		contractAddress: "0xdC27c60956cB065D19F08bb69a707E37b36d8086",
+		icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/13268.png",
+		minimumAmount: 50,
+		decimals: 18,
+	},
 };
 
 export const listChains: Chains[] = Object.keys(
@@ -132,3 +164,11 @@ export const validatePrice = (
 };
 
 export const listFrequencies = ["Days", "Weeks", "Months"];
+
+export const createClientSupabase = createClient(
+	import.meta.env.VITE_SUPABASE_URL as string,
+	import.meta.env.VITE_SUPABASE_ANON_KEY as string,
+);
+
+export const formatWallet = (value: string, start = 5, last = -5) =>
+	`${value.slice(0, start)}...${value.slice(last)}`;
