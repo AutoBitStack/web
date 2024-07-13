@@ -25,6 +25,8 @@ import {
 import { CopyIcon } from "lucide-react";
 import { useDetailOrder } from "../hooks";
 import { formatWallet, mappedByToken } from "@/lib/utils";
+import { useCopyToClipboard } from "usehooks-ts";
+import { toast } from "sonner";
 
 const DialogLimit: React.FC<{
 	orderId: string;
@@ -32,7 +34,18 @@ const DialogLimit: React.FC<{
 }> = ({ orderId, listTx }) => {
 	const { getLimitOrder } = useDetailOrder();
 	const { data, isError, isPending } = getLimitOrder(orderId);
-	console.log(data);
+	const [_, copy] = useCopyToClipboard();
+
+	const handleCopy = (text: string, m: string) => () => {
+		console.log("inid isini");
+		copy(text)
+			.then(() => {
+				toast.success(m);
+			})
+			.catch((error) => {
+				toast.error(`Failed to copy: ${error}`);
+			});
+	};
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
@@ -51,7 +64,12 @@ const DialogLimit: React.FC<{
 					<CardHeader className="bg-accent rounded-t-xl">
 						<CardTitle>
 							Order ID 0x69..294{" "}
-							<Button variant="outline" size="icon" className="w-5 h-5">
+							<Button
+								variant="outline"
+								size="icon"
+								className="w-5 h-5"
+								onClick={handleCopy(orderId, "Copied")}
+							>
 								<CopyIcon className="w-3 h-3" />
 							</Button>{" "}
 						</CardTitle>
@@ -102,7 +120,12 @@ const DialogLimit: React.FC<{
 										</div>
 										<div className="text-sm flex items-center gap-1">
 											<div>{formatWallet((data as string[])[1])}</div>
-											<Button variant="outline" size="icon" className="w-5 h-5">
+											<Button
+												variant="outline"
+												size="icon"
+												className="w-5 h-5"
+												onClick={handleCopy((data as string[])[1], "Copied")}
+											>
 												<CopyIcon className="w-3 h-3" />
 											</Button>
 										</div>
@@ -150,7 +173,11 @@ const DialogLimit: React.FC<{
 					</CardContent>
 				</Card>
 				<DialogFooter>
-					<Button variant="destructive" type="submit">
+					<Button
+						variant="destructive"
+						type="submit"
+						disabled={!!data && !(data as boolean[])[5]}
+					>
 						Cancel order
 					</Button>
 				</DialogFooter>

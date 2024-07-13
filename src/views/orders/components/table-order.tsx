@@ -38,8 +38,8 @@ export const TableOrders: React.FC<{
 								<TableCell className="hidden sm:table-cell capitalize">
 									{item.type_product}
 								</TableCell>
-								<TableCell>{item.created_at}</TableCell>
-								<TableCell className="flex justify-end">
+								<TableCell className="hidden sm:table-cell">{item.created_at}</TableCell>
+								<TableCell className="flex justify-end" >
 									{item.type_product === "limit" && (
 										<DialogLimit
 											orderId={item.order_id}

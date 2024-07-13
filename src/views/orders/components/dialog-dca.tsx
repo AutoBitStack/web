@@ -25,6 +25,8 @@ import {
 import { CopyIcon } from "lucide-react";
 import { useDetailOrder } from "../hooks";
 import { formatWallet, listFrequencies, mappedByToken } from "@/lib/utils";
+import { useCopyToClipboard } from "usehooks-ts";
+import { toast } from "sonner";
 
 const DialogDCA: React.FC<{
 	orderId: string;
@@ -32,6 +34,19 @@ const DialogDCA: React.FC<{
 }> = ({ orderId, listTx }) => {
 	const { getDcaOrder } = useDetailOrder();
 	const { data, isError, isPending } = getDcaOrder(orderId);
+
+	const [_, copy] = useCopyToClipboard();
+
+	const handleCopy = (text: string, m: string) => () => {
+		console.log("inid isini");
+		copy(text)
+			.then(() => {
+				toast.success(m);
+			})
+			.catch((error) => {
+				toast.error(`Failed to copy: ${error}`);
+			});
+	};
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
@@ -50,7 +65,12 @@ const DialogDCA: React.FC<{
 					<CardHeader className="bg-accent rounded-t-xl">
 						<CardTitle>
 							Order ID {formatWallet(orderId)}
-							<Button variant="outline" size="icon" className="w-5 h-5 ml-2">
+							<Button
+								variant="outline"
+								size="icon"
+								className="w-5 h-5 ml-2"
+								onClick={handleCopy(orderId, "Copied")}
+							>
 								<CopyIcon className="w-3 h-3" />
 							</Button>{" "}
 						</CardTitle>
@@ -62,14 +82,10 @@ const DialogDCA: React.FC<{
 								<div className="mt-4 space-y-2">
 									<div className="flex items-center justify-between">
 										<div className="text-muted-foreground text-sm">Status</div>
-										{((
-											data as (string | boolean | bigint)[]
-										)[7] as boolean) && (
+										{(data as boolean[])[7] && (
 											<Badge className="text-xs">ACTIVE</Badge>
 										)}
-										{(!(
-											data as (string | boolean | bigint)[]
-										)[7] as boolean) && (
+										{!(data as boolean[])[7] && (
 											<Badge variant="destructive" className="text-xs">
 												INACTIVE
 											</Badge>
@@ -133,8 +149,16 @@ const DialogDCA: React.FC<{
 										<div className="text-muted-foreground text-sm">
 											Bitcoin Address
 										</div>
-										<div className="text-sm">
-											{formatWallet((data as string[])[1])}
+										<div className="text-sm flex items-center gap-1">
+											<div>{formatWallet((data as string[])[1])}</div>
+											<Button
+												variant="outline"
+												size="icon"
+												className="w-5 h-5"
+												onClick={handleCopy((data as string[])[1], "Copied")}
+											>
+												<CopyIcon className="w-3 h-3" />
+											</Button>
 										</div>
 									</div>
 								</div>
@@ -180,7 +204,11 @@ const DialogDCA: React.FC<{
 					</CardContent>
 				</Card>
 				<DialogFooter>
-					<Button variant="destructive" type="submit">
+					<Button
+						variant="destructive"
+						type="submit"
+						disabled={!!data && !(data as boolean[])[7]}
+					>
 						Cancel order
 					</Button>
 				</DialogFooter>
