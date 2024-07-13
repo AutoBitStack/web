@@ -95,4 +95,40 @@ export const validatePositiveInteger = (
 	return null;
 };
 
+export const validatePrice = (
+	inputValue: string,
+	maxDecimals = 4,
+	maxValue = Number.MAX_SAFE_INTEGER,
+): string | null => {
+	// If the input starts with a dot, return null
+	if (inputValue.startsWith(".")) {
+		return null;
+	}
+
+	// Remove any non-digit and non-dot characters
+	const cleanedValue = inputValue.replace(/[^\d.]/g, "");
+
+	// Split into integer and decimal parts
+	const [integerPart, decimalPart] = cleanedValue.split(".");
+
+	// Limit decimal part to maxDecimals
+	const limitedDecimalPart = decimalPart
+		? decimalPart.slice(0, maxDecimals)
+		: "";
+
+	// Reconstruct the value
+	let result = integerPart;
+	if (decimalPart !== undefined) {
+		result += `.${limitedDecimalPart}`;
+	}
+
+	// Ensure the value doesn't exceed maxValue
+	const numValue = Number.parseFloat(result);
+	if (Number.isNaN(numValue) || numValue > maxValue) {
+		return null;
+	}
+
+	return result || null;
+};
+
 export const listFrequencies = ["Days", "Weeks", "Months"];

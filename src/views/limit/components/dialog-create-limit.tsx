@@ -10,9 +10,8 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
-import { listFrequencies } from "@/lib/utils";
 import type { Token } from "@/types";
-import { useDCA } from "../hooks";
+import { useLimit } from "../hooks";
 import { useAccount, useWaitForTransactionReceipt } from "wagmi";
 import { useEffect, useMemo, useState } from "react";
 import { zeroAddress } from "viem";
@@ -20,25 +19,24 @@ import { toast } from "sonner";
 import ToastTransaction from "@/components/toast-transaction";
 import Spinner from "@/components/spinner";
 
-const DialogReviewSwap: React.FC<{
+const DialogReviewLimit: React.FC<{
 	children: React.ReactNode;
 	amount: string;
 	token: Token;
-	limit: string;
-	frequency: number;
+	priceTarget: string;
 	btcAddress: string;
-}> = ({ children, amount, frequency, limit, token, btcAddress }) => {
+}> = ({ children, amount, priceTarget, token, btcAddress }) => {
 	const [open, setOpen] = useState(false);
 	const { address } = useAccount();
 	const {
 		checkAllowance,
 		hashApprove,
 		isPendingApproval,
-		hashDca,
-		isPendingCreateDca,
+		hashLimit,
+		isPendingLimit,
 		writeContractApprove,
-		writeContractDca,
-	} = useDCA(token.contractAddress, address ?? "");
+		writecontractLimit,
+	} = useLimit(token.contractAddress, address ?? "");
 
 	const { isLoading: isConfirmingApprove, isSuccess: isConfirmed } =
 		useWaitForTransactionReceipt({
@@ -46,7 +44,7 @@ const DialogReviewSwap: React.FC<{
 		});
 	const { isLoading: isConfirmingDca, isSuccess: isConfirmedDca } =
 		useWaitForTransactionReceipt({
-			hash: hashDca,
+			hash: hashLimit,
 		});
 
 	useEffect(() => {
@@ -61,16 +59,16 @@ const DialogReviewSwap: React.FC<{
 	}, [hashApprove, isConfirmed, checkAllowance.refetch]);
 
 	useEffect(() => {
-		if (hashDca && isConfirmedDca) {
+		if (hashLimit && isConfirmedDca) {
 			toast(
 				<ToastTransaction
-					link={`https://sepolia.etherscan.io/tx/${hashDca}`}
+					link={`https://sepolia.etherscan.io/tx/${hashLimit}`}
 				/>,
 			);
 			checkAllowance.refetch();
 			setOpen(false);
 		}
-	}, [hashDca, isConfirmedDca, checkAllowance.refetch]);
+	}, [hashLimit, isConfirmedDca, checkAllowance.refetch]);
 
 	const isApprove = useMemo(() => {
 		checkAllowance.refetch();
@@ -78,12 +76,11 @@ const DialogReviewSwap: React.FC<{
 		if (!(!!(checkAllowance.data as bigint) && !!amount)) return false;
 		return (
 			BigInt(checkAllowance.data as string) >=
-			BigInt(Number(amount) * Number(limit) * 10 ** token.decimals)
+			BigInt(Number(amount) * 10 ** token.decimals)
 		);
 	}, [
 		checkAllowance.data,
 		amount,
-		limit,
 		token.decimals,
 		token.contractAddress,
 		checkAllowance.refetch,
@@ -94,9 +91,9 @@ const DialogReviewSwap: React.FC<{
 			<DialogTrigger asChild>{children}</DialogTrigger>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>DCA Orders {String(isApprove)}</DialogTitle>
+					<DialogTitle>Limit Order {String(isApprove)}</DialogTitle>
 					<DialogDescription>
-						This is the detail of your DCA Order
+						This is the detail of your Limit Order
 					</DialogDescription>
 				</DialogHeader>
 				<Card>
@@ -120,14 +117,10 @@ const DialogReviewSwap: React.FC<{
 								</div>
 							</div>
 							<div className="flex items-center justify-between">
-								<div className="text-muted-foreground text-sm">Frequency</div>
-								<div className="text-sm">{listFrequencies[frequency]}</div>
-							</div>
-							<div className="flex items-center justify-between">
 								<div className="text-muted-foreground text-sm">
-									Total Frequency
+									Price Target
 								</div>
-								<div className="text-sm">{limit}</div>
+								<div className="text-sm">{priceTarget}</div>
 							</div>
 							<div className="flex items-center justify-between">
 								<div className="text-muted-foreground text-sm">
@@ -141,7 +134,7 @@ const DialogReviewSwap: React.FC<{
 									Total
 								</div>
 								<div className="text-base font-bold">
-									{Number(amount) * Number(limit)} {token.symbol}
+									{Number(amount)} {token.symbol}
 								</div>
 							</div>
 						</div>
@@ -154,7 +147,7 @@ const DialogReviewSwap: React.FC<{
 							type="button"
 							onClick={() =>
 								writeContractApprove(
-									BigInt(Number(amount) * Number(limit) * 10 ** token.decimals),
+									BigInt(Number(amount) * 10 ** token.decimals),
 								)
 							}
 							disabled={isApprove || isPendingApproval || isConfirmingApprove}
@@ -166,18 +159,17 @@ const DialogReviewSwap: React.FC<{
 						<Button
 							variant="default"
 							type="button"
-							disabled={!isApprove || isConfirmingDca || isPendingCreateDca}
+							disabled={!isApprove || isConfirmingDca || isPendingLimit}
 							onClick={() =>
-								writeContractDca(
-									BigInt(Number(amount) * Number(limit) * 10 ** token.decimals),
+								writecontractLimit(
+									BigInt(Number(amount) * 10 ** token.decimals),
 									btcAddress,
-									frequency,
-									limit,
+									BigInt(Number(priceTarget) * 10 ** 4).toString(),
 								)
 							}
 							className="flex items-center gap-1"
 						>
-							{(isPendingCreateDca || isConfirmingDca) && <Spinner />}
+							{(isPendingLimit || isConfirmingDca) && <Spinner />}
 							<div>Submit order</div>
 						</Button>
 					</div>
@@ -187,4 +179,4 @@ const DialogReviewSwap: React.FC<{
 	);
 };
 
-export default DialogReviewSwap;
+export default DialogReviewLimit;

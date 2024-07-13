@@ -14,7 +14,6 @@ import { useMemo, useState } from "react";
 import type { Token } from "@/types";
 import { useAccount, useChainId } from "wagmi";
 import DialogReviewSwap from "./components/dialog-reviewswap";
-import { useDCA } from "./hooks";
 
 const DCAPage = () => {
 	const [amount, setAmount] = useState<string>("");
@@ -29,7 +28,7 @@ const DCAPage = () => {
 		setAmount(handleInputCurrency(e) ?? "");
 	};
 
-	const { isConnected, chainId: connectedChainId, address } = useAccount();
+	const { isConnected, chainId: connectedChainId } = useAccount();
 	const chainId = useChainId();
 
 	const errorWallet = useMemo(() => {

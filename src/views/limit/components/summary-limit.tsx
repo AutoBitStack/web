@@ -5,14 +5,19 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
+import type { Token } from "@/types";
 import { InfoIcon } from "lucide-react";
 
-const SummaryLimit = () => {
+const SummaryLimit: React.FC<{
+	priceTarget: string;
+	amount: string;
+	token: Token;
+}> = ({ priceTarget, amount, token }) => {
 	return (
 		<div className="mb-4 space-y-2">
 			<div className="flex items-center justify-between">
 				<div className="text-sm text-muted-foreground">Price Target</div>
-				<div className="text-sm">55,000.00</div>
+				<div className="text-sm">{priceTarget}</div>
 			</div>
 			<div className="flex items-center justify-between">
 				<div className="text-sm text-muted-foreground">Price Collar</div>
@@ -36,12 +41,16 @@ const SummaryLimit = () => {
 			</div>
 			<div className="flex items-center justify-between">
 				<div className="text-sm text-muted-foreground">Amount</div>
-				<div className="text-sm">0.02 ETH</div>
+				<div className="text-sm">
+					{amount} {token.symbol}
+				</div>
 			</div>
 			<Separator />
 			<div className="flex items-center justify-between">
 				<div className="text-sm text-muted-foreground font-bold">Total</div>
-				<div className="text-sm font-bold">0.02 ETH</div>
+				<div className="text-sm font-bold">
+					{amount} {token.symbol}
+				</div>
 			</div>
 		</div>
 	);
