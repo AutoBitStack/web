@@ -9,11 +9,14 @@ export const useLimit = (tokenAddress: string, ownerAddress: string) => {
 		data: hashApprove,
 		writeContract: writeApprove,
 		isPending: isPendingApproval,
+		error: errorApproval,
 	} = useWriteContract();
+
 	const {
 		data: hashLimit,
 		writeContract: writeLimit,
 		isPending: isPendingLimit,
+		error: errorLimit,
 	} = useWriteContract();
 
 	const checkAllowance = useReadContract({
@@ -61,6 +64,8 @@ export const useLimit = (tokenAddress: string, ownerAddress: string) => {
 		hashLimit,
 		isPendingApproval,
 		isPendingLimit,
+		errorLimit,
+		errorApproval,
 		writeContractApprove,
 		writecontractLimit,
 	};

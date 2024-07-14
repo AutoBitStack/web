@@ -34,9 +34,23 @@ const DialogReviewLimit: React.FC<{
 		isPendingApproval,
 		hashLimit,
 		isPendingLimit,
+		errorLimit,
+		errorApproval,
 		writeContractApprove,
 		writecontractLimit,
 	} = useLimit(token.contractAddress, address ?? "");
+
+	useEffect(() => {
+		if (errorLimit) {
+			toast.error(errorLimit.message);
+		}
+	}, [errorLimit]);
+
+	useEffect(() => {
+		if (errorApproval) {
+			toast.error(errorApproval.message);
+		}
+	}, [errorApproval]);
 
 	const { isLoading: isConfirmingApprove, isSuccess: isConfirmed } =
 		useWaitForTransactionReceipt({

@@ -8,7 +8,7 @@ import { useAccount } from "wagmi";
 
 export const Orders = () => {
 	const { getAllData } = useDetailOrder();
-	const [loading, setLoading] = useState(true);
+	const [loading, setLoading] = useState(false);
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	const [data, setData] = useState<{ isError: boolean; data: any[] }>({
 		isError: false,

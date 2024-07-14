@@ -36,9 +36,23 @@ const DialogReviewSwap: React.FC<{
 		isPendingApproval,
 		hashDca,
 		isPendingCreateDca,
+		errorApproval,
+		errorDca,
 		writeContractApprove,
 		writeContractDca,
 	} = useDCA(token.contractAddress, address ?? "");
+
+	useEffect(() => {
+		if (errorApproval) {
+			toast.error(errorApproval.message);
+		}
+	}, [errorApproval]);
+
+	useEffect(() => {
+		if (errorDca) {
+			toast.error(errorDca.message);
+		}
+	}, [errorDca]);
 
 	const { isLoading: isConfirmingApprove, isSuccess: isConfirmed } =
 		useWaitForTransactionReceipt({

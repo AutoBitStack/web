@@ -7,6 +7,7 @@ import { WagmiProvider } from "wagmi";
 import { sepolia } from "wagmi/chains";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { Toaster } from "sonner";
+import CustomAvatar from "./components/custom-avatar";
 
 const config = getDefaultConfig({
 	appName: "AutoStackBit",
@@ -20,7 +21,7 @@ function App() {
 	return (
 		<WagmiProvider config={config}>
 			<QueryClientProvider client={queryClient}>
-				<RainbowKitProvider>
+				<RainbowKitProvider avatar={CustomAvatar}>
 					<ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
 						<Toaster
 							position="top-center"
@@ -31,6 +32,7 @@ function App() {
 										"group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg group-[.toaster]:pointer-events-auto",
 								},
 							}}
+							closeButton
 						/>
 						<RouterProvider router={router} />
 					</ThemeProvider>

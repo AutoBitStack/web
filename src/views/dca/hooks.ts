@@ -9,11 +9,13 @@ export const useDCA = (tokenAddress: string, ownerAddress: string) => {
 		data: hashApprove,
 		writeContract: writeApprove,
 		isPending: isPendingApproval,
+		error: errorApproval,
 	} = useWriteContract();
 	const {
 		data: hashDca,
 		writeContract: writeDca,
 		isPending: isPendingCreateDca,
+		error: errorDca,
 	} = useWriteContract();
 
 	const checkAllowance = useReadContract({
@@ -58,11 +60,13 @@ export const useDCA = (tokenAddress: string, ownerAddress: string) => {
 
 	return {
 		checkAllowance,
-		writeContractApprove,
 		hashApprove,
 		hashDca,
-		writeContractDca,
 		isPendingApproval,
 		isPendingCreateDca,
+		errorApproval,
+		errorDca,
+		writeContractApprove,
+		writeContractDca,
 	};
 };
