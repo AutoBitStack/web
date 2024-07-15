@@ -8,7 +8,7 @@ export const CustomAvatar: AvatarComponent = ({ address, size }) => {
 			width={size}
 			height={size}
 			style={{ borderRadius: 999 }}
-            alt="avatar-wallet"
+			alt="avatar-wallet"
 		/>
 	);
 };

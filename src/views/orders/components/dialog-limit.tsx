@@ -27,14 +27,46 @@ import { useDetailOrder } from "../hooks";
 import { formatWallet, mappedByToken } from "@/lib/utils";
 import { useCopyToClipboard } from "usehooks-ts";
 import { toast } from "sonner";
+import { useEffect, useState } from "react";
+import { useWaitForTransactionReceipt } from "wagmi";
+import ToastTransaction from "@/components/toast-transaction";
+import Spinner from "@/components/spinner";
 
 const DialogLimit: React.FC<{
 	orderId: string;
 	listTx: { tx_hash: string }[];
 }> = ({ orderId, listTx }) => {
-	const { getLimitOrder } = useDetailOrder();
+	const [open, setOpen] = useState(false);
+	const {
+		getLimitOrder,
+		errorCancelLimit,
+		hashCancelLimit,
+		cancelLimit,
+		isPendingCancelLimit,
+	} = useDetailOrder();
 	const { data, isError, isPending } = getLimitOrder(orderId);
 	const [_, copy] = useCopyToClipboard();
+
+	useEffect(() => {
+		if (errorCancelLimit) {
+			toast.error(errorCancelLimit.message);
+		}
+	}, [errorCancelLimit]);
+
+	const { isLoading, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
+		hash: hashCancelLimit,
+	});
+
+	useEffect(() => {
+		if (hashCancelLimit && isConfirmed) {
+			toast(
+				<ToastTransaction
+					link={`https://sepolia.etherscan.io/tx/${hashCancelLimit}`}
+				/>,
+			);
+			setOpen(false);
+		}
+	}, [hashCancelLimit, isConfirmed]);
 
 	const handleCopy = (text: string, m: string) => () => {
 		console.log("inid isini");
@@ -47,7 +79,7 @@ const DialogLimit: React.FC<{
 			});
 	};
 	return (
-		<Dialog>
+		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
 				<Button variant="link" className="text-xs h-6">
 					Detail
@@ -176,9 +208,16 @@ const DialogLimit: React.FC<{
 					<Button
 						variant="destructive"
 						type="submit"
-						disabled={!!data && !(data as boolean[])[5]}
+						disabled={
+							!!data && !(data as boolean[])[5]
+								? true
+								: isLoading || isPendingCancelLimit
+						}
+						onClick={() => cancelLimit(orderId)}
+						className="flex items-center gap-1"
 					>
-						Cancel order
+						{(isLoading || isPendingCancelLimit) && <Spinner />}
+						<div>Cancel order</div>
 					</Button>
 				</DialogFooter>
 			</DialogContent>

@@ -27,13 +27,45 @@ import { useDetailOrder } from "../hooks";
 import { formatWallet, listFrequencies, mappedByToken } from "@/lib/utils";
 import { useCopyToClipboard } from "usehooks-ts";
 import { toast } from "sonner";
+import { useEffect, useState } from "react";
+import { useWaitForTransactionReceipt } from "wagmi";
+import ToastTransaction from "@/components/toast-transaction";
+import Spinner from "@/components/spinner";
 
 const DialogDCA: React.FC<{
 	orderId: string;
 	listTx: { tx_hash: string }[];
 }> = ({ orderId, listTx }) => {
-	const { getDcaOrder } = useDetailOrder();
+	const [open, setOpen] = useState(false);
+	const {
+		getDcaOrder,
+		hashCancelDca,
+		isPendingCancelDca,
+		errorCancelDca,
+		cancelDca,
+	} = useDetailOrder();
 	const { data, isError, isPending } = getDcaOrder(orderId);
+
+	useEffect(() => {
+		if (errorCancelDca) {
+			toast.error(errorCancelDca.message);
+		}
+	}, [errorCancelDca]);
+
+	const { isLoading, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
+		hash: hashCancelDca,
+	});
+
+	useEffect(() => {
+		if (hashCancelDca && isConfirmed) {
+			toast(
+				<ToastTransaction
+					link={`https://sepolia.etherscan.io/tx/${hashCancelDca}`}
+				/>,
+			);
+			setOpen(false);
+		}
+	}, [hashCancelDca, isConfirmed]);
 
 	const [_, copy] = useCopyToClipboard();
 
@@ -48,7 +80,7 @@ const DialogDCA: React.FC<{
 			});
 	};
 	return (
-		<Dialog>
+		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
 				<Button variant="link" className="text-xs h-6">
 					Detail
@@ -82,10 +114,10 @@ const DialogDCA: React.FC<{
 								<div className="mt-4 space-y-2">
 									<div className="flex items-center justify-between">
 										<div className="text-muted-foreground text-sm">Status</div>
-										{(data as boolean[])[7] && (
+										{(data as boolean[])[8] && (
 											<Badge className="text-xs">ACTIVE</Badge>
 										)}
-										{!(data as boolean[])[7] && (
+										{!(data as boolean[])[8] && (
 											<Badge variant="destructive" className="text-xs">
 												INACTIVE
 											</Badge>
@@ -111,13 +143,13 @@ const DialogDCA: React.FC<{
 											/>
 										</div>
 									</div>
-									<div className="flex items-center justify-between">
+									{/* <div className="flex items-center justify-between">
 										<div className="text-muted-foreground text-sm">
 											Remaining Amount
 										</div>
 										<div className="text-sm flex items-center gap-1">
 											<div>
-												{Number((data as bigint[])[3]) /
+												{Number((data as bigint[])[7]) /
 													10 **
 														(mappedByToken[(data as string[])[2]]?.decimals ??
 															0)}
@@ -128,7 +160,7 @@ const DialogDCA: React.FC<{
 												className="w-4 h-4 rounded-full"
 											/>
 										</div>
-									</div>
+									</div> */}
 									<div className="flex items-center justify-between">
 										<div className="text-muted-foreground text-sm">
 											Frequency
@@ -207,9 +239,16 @@ const DialogDCA: React.FC<{
 					<Button
 						variant="destructive"
 						type="submit"
-						disabled={!!data && !(data as boolean[])[7]}
+						disabled={
+							!!data && !(data as boolean[])[8]
+								? true
+								: isLoading || isPendingCancelDca
+						}
+						onClick={() => cancelDca(orderId)}
+						className="flex items-center gap-1"
 					>
-						Cancel order
+						{(isLoading || isPendingCancelDca) && <Spinner />}
+						<div>Cancel order</div>
 					</Button>
 				</DialogFooter>
 			</DialogContent>
