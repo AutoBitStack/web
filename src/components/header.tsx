@@ -10,7 +10,9 @@ const Header = () => {
 			</div>
 			<div className="flex items-center gap-4 justify-center">
 				<CustomConnectButton />
-				<GitHubLogoIcon className="h-6 w-6" />
+				<a href="https://github.com/AutoBitStack" target="_blank" rel="noopener noreferrer">
+                    <GitHubLogoIcon className="h-6 w-6" />
+                </a>
 			</div>
 		</div>
 	);
