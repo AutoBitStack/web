@@ -4,7 +4,7 @@ import { twMerge } from "tailwind-merge";
 import { zeroAddress } from "viem";
 import { createClient } from "@supabase/supabase-js";
 
-export const HUB_CONTRACT = "0xB34CAF81D30D945B7E1930991d49B8577A4dCdC8";
+export const HUB_CONTRACT = "0x6a40a5BC13E374b0Ae02fFF6A672138c695C7e66";
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
