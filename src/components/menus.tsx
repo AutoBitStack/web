@@ -1,6 +1,5 @@
 import { ArrowUpRightIcon } from "lucide-react";
 import { Button } from "./ui/button";
-import { Navigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 export const Menus: React.FC<{ activeMenu: string }> = ({
