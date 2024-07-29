@@ -95,7 +95,7 @@ const DialogLimit: React.FC<{
 				<Card>
 					<CardHeader className="bg-accent rounded-t-xl">
 						<CardTitle>
-							Order ID 0x69..294{" "}
+							Order ID {formatWallet(orderId)}
 							<Button
 								variant="outline"
 								size="icon"
